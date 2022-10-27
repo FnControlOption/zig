@@ -1085,6 +1085,7 @@ set(ZIG_BUILD_ARGS
     "-Dtarget=${ZIG_TARGET_TRIPLE}"
     "-Dcpu=${ZIG_TARGET_MCPU}"
     "-Dversion-string=${ZIG_VERSION}"
+    "--verbose-link"
 )
 
 add_custom_target(stage3 ALL
