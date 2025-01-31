@@ -11,7 +11,20 @@ pub fn rescanMac(cb: *Bundle, gpa: Allocator) RescanMacError!void {
     cb.bytes.clearRetainingCapacity();
     cb.map.clearRetainingCapacity();
 
-    const file = try fs.openFileAbsolute("/System/Library/Keychains/SystemRootCertificates.keychain", .{});
+    const keychainPaths = [_][]const u8{
+        "/System/Library/Keychains/SystemRootCertificates.keychain",
+        "/Library/Keychains/System.keychain",
+    };
+
+    for (keychainPaths) |keychainPath| {
+        try addCertsFromKeychain(cb, gpa, keychainPath);
+    }
+
+    cb.bytes.shrinkAndFree(gpa, cb.bytes.items.len);
+}
+
+fn addCertsFromKeychain(cb: *Bundle, gpa: Allocator, keychainPath: []const u8) RescanMacError!void {
+    const file = try fs.openFileAbsolute(keychainPath, .{});
     defer file.close();
 
     const bytes = try file.readToEndAlloc(gpa, std.math.maxInt(u32));
@@ -68,8 +81,6 @@ pub fn rescanMac(cb: *Bundle, gpa: Allocator) RescanMacError!void {
             try cb.parseCert(gpa, cert_start, now_sec);
         }
     }
-
-    cb.bytes.shrinkAndFree(gpa, cb.bytes.items.len);
 }
 
 const ApplDbHeader = extern struct {
