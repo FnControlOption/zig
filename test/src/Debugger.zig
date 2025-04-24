@@ -2199,16 +2199,16 @@ pub fn addTestsForTarget(db: *Debugger, target: Target) void {
                 \\const std = @import("std");
                 \\fn testSegmentedList() void {}
                 \\pub fn main() !void {
-                \\    var list0: std.SegmentedList(usize, 0) = .{};
+                \\    var list0: std.SegmentedList(usize, 0) = .empty;
                 \\    defer list0.deinit(std.heap.page_allocator);
                 \\
-                \\    var list1: std.SegmentedList(usize, 1) = .{};
+                \\    var list1: std.SegmentedList(usize, 1) = .empty;
                 \\    defer list1.deinit(std.heap.page_allocator);
                 \\
-                \\    var list2: std.SegmentedList(usize, 2) = .{};
+                \\    var list2: std.SegmentedList(usize, 2) = .empty;
                 \\    defer list2.deinit(std.heap.page_allocator);
                 \\
-                \\    var list4: std.SegmentedList(usize, 4) = .{};
+                \\    var list4: std.SegmentedList(usize, 4) = .empty;
                 \\    defer list4.deinit(std.heap.page_allocator);
                 \\
                 \\    for (0..32) |i| {

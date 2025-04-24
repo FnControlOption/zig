@@ -1607,7 +1607,7 @@ fn processOneTarget(job: Job) void {
 
                     const gop = try cpu_aliases.getOrPut(try llvmNameToZigName(arena, llvm_name));
 
-                    if (!gop.found_existing) gop.value_ptr.* = .{};
+                    if (!gop.found_existing) gop.value_ptr.* = .empty;
 
                     try gop.value_ptr.append(arena, .{
                         .llvm = llvm_alias,

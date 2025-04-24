@@ -75,6 +75,8 @@ const Allocator = std.mem.Allocator;
 ///
 /// It supports preallocated elements, making it especially well suited when the expected maximum
 /// size is small. `prealloc_item_count` must be 0, or a power of 2.
+///
+/// Default initialization of this struct is deprecated; use `.empty` instead.
 pub fn SegmentedList(comptime T: type, comptime prealloc_item_count: usize) type {
     return struct {
         const Self = @This();
@@ -95,6 +97,13 @@ pub fn SegmentedList(comptime T: type, comptime prealloc_item_count: usize) type
         prealloc_segment: [prealloc_item_count]T = undefined,
         dynamic_segments: [][*]T = &[_][*]T{},
         len: usize = 0,
+
+        /// A SegmentedList containing no elements.
+        pub const empty: Self = .{
+            .prealloc_segment = undefined,
+            .dynamic_segments = &[_][*]T{},
+            .len = 0,
+        };
 
         pub const prealloc_count = prealloc_item_count;
 
@@ -418,7 +427,7 @@ test "basic usage" {
 }
 
 fn testSegmentedList(comptime prealloc: usize) !void {
-    var list = SegmentedList(i32, prealloc){};
+    var list: SegmentedList(i32, prealloc) = .empty;
     defer list.deinit(testing.allocator);
 
     {
@@ -508,7 +517,7 @@ fn testSegmentedList(comptime prealloc: usize) !void {
 }
 
 test "clearRetainingCapacity" {
-    var list = SegmentedList(i32, 1){};
+    var list: SegmentedList(i32, 1) = .empty;
     defer list.deinit(testing.allocator);
 
     try list.appendSlice(testing.allocator, &[_]i32{ 4, 5 });
